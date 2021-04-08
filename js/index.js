@@ -1,4 +1,4 @@
-import galleryItems from ;
+import galleryItems from '../js/index';
 
 // Разбей задание на несколько подзадач:
 
