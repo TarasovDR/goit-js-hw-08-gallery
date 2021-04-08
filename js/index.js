@@ -1,4 +1,4 @@
-import galleryItems from '../js/index';
+import galleryItems from '../gallery-items.js';
 
 // Разбей задание на несколько подзадач:
 
@@ -10,23 +10,27 @@ import galleryItems from '../js/index';
 // Очистка значения атрибута src элемента img.lightbox__image. Это необходимо для того, чтобы при следующем открытии модального окна, пока грузится изображение, мы не видели предыдущее.
 
 const refs = {
-  gallery: document.querySelector('js-gallery'),
-  lightbox: document.querySelector('js-lightbox'),
-  lightboxOverlay: document.querySelector('lightbox__overlay'),
-  lightboxImage: document.querySelector('lightbox__image'),
+  gallery: document.querySelector('.js-gallery'),
+  lightbox: document.querySelector('.js-lightbox'),
+  lightboxOverlay: document.querySelector('.lightbox__overlay'),
+  lightboxImage: document.querySelector('.lightbox__image'),
 };
 
+const gallery = document.querySelector('.js-gallery');
+const galleryMarkup = makeGalleryList(galleryItems);
+
 function makeGalleryList(imagesGallery) {
-  return galleryItems
+  return imagesGallery
     .map(({ preview, original, description }) => {
       return `
       <li class="gallery__item">
-        <a href="${original}" class="gallery__link"
+        <a href=${original} class="gallery__link">
           <img 
-          src="${preview}" 
-          class="gallery__image" 
-          alt="${description}">
-
+          src=${preview}
+          data-source=${original}
+          class="gallery__image"
+          alt=${description}
+          />
         </a>
       </li>    
       `;
@@ -34,5 +38,4 @@ function makeGalleryList(imagesGallery) {
     .join('');
 }
 
-const galleryMarkup = makeGalleryList(galleryItems);
 refs.gallery.insertAdjacentHTML('afterbegin', galleryMarkup);
