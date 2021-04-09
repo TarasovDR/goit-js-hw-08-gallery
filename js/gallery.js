@@ -39,11 +39,12 @@ function makeGalleryList(imagesGallery) {
 // --- Open ---
 function onModalOpen(e) {
   e.preventDefault();
-  if (e.target.nodeName !== 'IMG') {
+  if (e.target.classList.contains('lightbox__image')) {
     return;
   }
   addLightboxClass(e);
-  console.log(e.target);
+  setOriginalImage(e);
+  console.log(e.target.dataset.source);
 }
 
 function addLightboxClass() {
@@ -53,19 +54,24 @@ function addLightboxClass() {
 // --- Close ---
 function onModalClose(e) {
   e.preventDefault();
-  if (e.target.nodeName !== 'BUTTON') {
+  if (!e.target.classList.contains('lightbox__button')) {
     return;
   }
   removeLightboxClass(e);
-  console.log(e.target);
+  refs.lightboxImage.src = '';
+  // console.log(e.target);
 }
 
 function removeLightboxClass() {
   refs.lightbox.classList.remove('is-open');
 }
 
-// Реализация делегирования на галерее ul.js-gallery и получение url большого изображения.
-// Открытие модального окна по клику на элементе галереи.
-// Подмена значения атрибута src элемента img.lightbox__image.
-// Закрытие модального окна по клику на кнопку button[data-action="close-lightbox"].
+function setOriginalImage(e) {
+  const originalImage = e.target.dataset.source;
+  refs.lightboxImage.src = originalImage;
+}
+
 // Очистка значения атрибута src элемента img.lightbox__image. Это необходимо для того, чтобы при следующем открытии модального окна, пока грузится изображение, мы не видели предыдущее.
+// Закрытие модального окна по клику на div.lightbox__overlay.
+// Закрытие модального окна по нажатию клавиши ESC.
+// Пролистывание изображений галереи в открытом модальном окне клавишами "влево" и "вправо".
