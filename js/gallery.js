@@ -14,6 +14,7 @@ const galleryMarkup = makeGalleryList(galleryItems);
 refs.gallery.insertAdjacentHTML('afterbegin', galleryMarkup);
 refs.gallery.addEventListener('click', onModalOpen);
 refs.lightbox.addEventListener('click', onModalClose);
+refs.lightboxOverlay.addEventListener('click', onModalClose);
 
 function makeGalleryList(imagesGallery) {
   return imagesGallery
@@ -21,14 +22,16 @@ function makeGalleryList(imagesGallery) {
       return `
       <li class="gallery__item">
         <a 
-        class="gallery__link"
-        href=${original}>
-          <img 
-          src=${preview}
-          data-source=${original}
-          class="gallery__image"
-          alt=${description}
-          />
+          class="gallery__link"
+          href=${original}
+        >
+            <img 
+              src=${preview}
+              data-source=${original}
+              class="gallery__image"
+              alt=${description}
+              loading="lazy"
+            />
         </a>
       </li>    
       `;
@@ -39,11 +42,15 @@ function makeGalleryList(imagesGallery) {
 // --- Open ---
 function onModalOpen(e) {
   e.preventDefault();
-  if (e.target.classList.contains('lightbox__image')) {
+
+  if (e.target.nodeName !== 'IMG') {
     return;
   }
+
   addLightboxClass(e);
   setOriginalImage(e);
+
+  window.addEventListener('keydown', onModalClose);
   console.log(e.target.dataset.source);
 }
 
@@ -51,27 +58,27 @@ function addLightboxClass() {
   refs.lightbox.classList.add('is-open');
 }
 
+function setOriginalImage(e) {
+  const originalImage = e.target.dataset.source;
+  refs.lightboxImage.src = originalImage;
+}
+
 // --- Close ---
 function onModalClose(e) {
-  e.preventDefault();
-  if (!e.target.classList.contains('lightbox__button')) {
-    return;
+  const isCloseBtn = e.target.classList.contains('lightbox__button');
+  const isCloseOverlay = e.target.classList.contains('lightbox__overlay');
+  const isCloseEscBtn = e.code === 'Escape';
+
+  if (isCloseBtn || isCloseOverlay || isCloseEscBtn) {
+    removeLightboxClass(e);
+    refs.lightboxImage.src = '';
   }
-  removeLightboxClass(e);
-  refs.lightboxImage.src = '';
-  // console.log(e.target);
+
+  window.removeEventListener('keydown', onModalClose);
 }
 
 function removeLightboxClass() {
   refs.lightbox.classList.remove('is-open');
 }
 
-function setOriginalImage(e) {
-  const originalImage = e.target.dataset.source;
-  refs.lightboxImage.src = originalImage;
-}
-
-// Очистка значения атрибута src элемента img.lightbox__image. Это необходимо для того, чтобы при следующем открытии модального окна, пока грузится изображение, мы не видели предыдущее.
-// Закрытие модального окна по клику на div.lightbox__overlay.
-// Закрытие модального окна по нажатию клавиши ESC.
 // Пролистывание изображений галереи в открытом модальном окне клавишами "влево" и "вправо".
