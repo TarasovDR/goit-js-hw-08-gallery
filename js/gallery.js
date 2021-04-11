@@ -51,7 +51,10 @@ function onModalOpen(e) {
   setOriginalImage(e);
 
   window.addEventListener('keydown', onModalClose);
+  // window.addEventListener('keydown', onChangeArrow);
+
   console.log(e.target.dataset.source);
+  console.log(e.target.alt);
 }
 
 function addLightboxClass() {
@@ -59,8 +62,9 @@ function addLightboxClass() {
 }
 
 function setOriginalImage(e) {
-  const originalImage = e.target.dataset.source;
-  refs.lightboxImage.src = originalImage;
+  const originalImageSrc = e.target.dataset.source;
+  const originalImageAlt = e.target.alt;
+  changingSrcAndAlt(originalImageSrc, originalImageAlt);
 }
 
 // --- Close ---
@@ -71,14 +75,24 @@ function onModalClose(e) {
 
   if (isCloseBtn || isCloseOverlay || isCloseEscBtn) {
     removeLightboxClass(e);
-    refs.lightboxImage.src = '';
+    changingSrcAndAlt('', '');
   }
-
   window.removeEventListener('keydown', onModalClose);
 }
 
 function removeLightboxClass() {
   refs.lightbox.classList.remove('is-open');
 }
+
+function changingSrcAndAlt(src, alt) {
+  refs.lightboxImage.src = src;
+  refs.lightboxImage.alt = alt;
+}
+// --- Change Image By Arrows---
+// function onChangeArrow() {
+//   let currentImage = refs.lightboxImage.src;
+//   const nextImage = ;
+//   const prevImage = ;
+// }
 
 // Пролистывание изображений галереи в открытом модальном окне клавишами "влево" и "вправо".
