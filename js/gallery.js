@@ -15,6 +15,7 @@ refs.gallery.insertAdjacentHTML('afterbegin', galleryMarkup);
 refs.gallery.addEventListener('click', onModalOpen);
 refs.lightbox.addEventListener('click', onModalClose);
 refs.lightboxOverlay.addEventListener('click', onModalClose);
+window.addEventListener('keydown', onChangeArrow);
 
 function makeGalleryList(imagesGallery) {
   return imagesGallery
@@ -51,7 +52,8 @@ function onModalOpen(e) {
   setOriginalImage(e);
 
   window.addEventListener('keydown', onModalClose);
-  // window.addEventListener('keydown', onChangeArrow);
+
+  // onChangeArrow(e);
 
   console.log(e.target.dataset.source);
   console.log(e.target.alt);
@@ -78,6 +80,7 @@ function onModalClose(e) {
     changingSrcAndAlt('', '');
   }
   window.removeEventListener('keydown', onModalClose);
+  // window.removeEventListener('keydown', onChangeArrow); // блокирует нажатие клавиш в модалке более 1 раза
 }
 
 function removeLightboxClass() {
@@ -88,11 +91,55 @@ function changingSrcAndAlt(src, alt) {
   refs.lightboxImage.src = src;
   refs.lightboxImage.alt = alt;
 }
-// --- Change Image By Arrows---
-// function onChangeArrow() {
-//   let currentImage = refs.lightboxImage.src;
-//   const nextImage = ;
-//   const prevImage = ;
-// }
 
-// Пролистывание изображений галереи в открытом модальном окне клавишами "влево" и "вправо".
+// --- Change Image By Arrows---
+function onChangeArrow(e) {
+  let currentImage = refs.lightboxImage.src;
+  let currentIndex = 0;
+  const nextImage = e.code === 'ArrowRight';
+  const prevImage = e.code === 'ArrowLeft';
+
+  galleryItems.forEach((item, index) => {
+    const originalImage = item.original;
+
+    if (currentImage === originalImage) {
+      currentIndex = index;
+    }
+  });
+
+  if (nextImage && currentIndex < galleryItems.length - 1) {
+    currentIndex += 1;
+    changingSrcAndAlt(
+      galleryItems[currentIndex].original,
+      galleryItems[currentIndex].description,
+    );
+    return;
+  }
+
+  if (prevImage && currentIndex > 0) {
+    currentIndex -= 1;
+    changingSrcAndAlt(
+      galleryItems[currentIndex].original,
+      galleryItems[currentIndex].description,
+    );
+    return;
+  }
+
+  if (nextImage && currentIndex === galleryItems.length - 1) {
+    currentIndex = 0;
+    changingSrcAndAlt(
+      galleryItems[currentIndex].original,
+      galleryItems[currentIndex].description,
+    );
+    return;
+  }
+
+  if (prevImage && currentIndex === 0) {
+    currentIndex = galleryItems.length - 1;
+    changingSrcAndAlt(
+      galleryItems[currentIndex].original,
+      galleryItems[currentIndex].description,
+    );
+    return;
+  }
+}
