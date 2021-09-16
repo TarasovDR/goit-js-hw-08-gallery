@@ -1,4 +1,4 @@
-import galleryItems from '../gallery-items.js';
+import galleryItems from './gallery-items.js';
 
 const refs = {
   gallery: document.querySelector('.js-gallery'),
@@ -40,7 +40,6 @@ function makeGalleryList(imagesGallery) {
     .join('');
 }
 
-// --- Open ---
 function onModalOpen(e) {
   e.preventDefault();
 
@@ -52,8 +51,6 @@ function onModalOpen(e) {
   setOriginalImage(e);
 
   window.addEventListener('keydown', onModalClose);
-
-  // onChangeArrow(e);
 
   console.log(e.target.dataset.source);
   console.log(e.target.alt);
@@ -69,7 +66,6 @@ function setOriginalImage(e) {
   changingSrcAndAlt(originalImageSrc, originalImageAlt);
 }
 
-// --- Close ---
 function onModalClose(e) {
   const isCloseBtn = e.target.classList.contains('lightbox__button');
   const isCloseOverlay = e.target.classList.contains('lightbox__overlay');
@@ -80,7 +76,6 @@ function onModalClose(e) {
     changingSrcAndAlt('', '');
   }
   window.removeEventListener('keydown', onModalClose);
-  // window.removeEventListener('keydown', onChangeArrow); // блокирует нажатие клавиш в модалке более 1 раза
 }
 
 function removeLightboxClass() {
@@ -92,7 +87,6 @@ function changingSrcAndAlt(src, alt) {
   refs.lightboxImage.alt = alt;
 }
 
-// --- Change Image By Arrows---
 function onChangeArrow(e) {
   let currentImage = refs.lightboxImage.src;
   let currentIndex = 0;
